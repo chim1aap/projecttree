@@ -4,13 +4,21 @@ import pathlib
 import sys
 import re
 import datetime
-p = pathlib.Path('../')
-PROJECTLISTPATH = '/home/chim1aap/Nextcloud/projects'
+
 # prefixes:
 l   = " ├──"
 ll  = " │    ├──"
 ls  = " |    └──"
 s   = " └── "
+
+
+
+PROJECTLISTPATH = os.getenv("TODOTXT_PROJECTTREE_FOLDER")
+
+if PROJECTLISTPATH is None:
+    PROJECTLISTPATH = pathlib.Path.home()
+
+
 p = pathlib.Path(PROJECTLISTPATH)
 folderlist = {"No Project" : [] }
 for i in p.glob('*/'):
