@@ -31,21 +31,27 @@ def printTodo(tododict):
     for project in tododict:
         print(l, project)
         if tododict[project] == [] :
-            print(ll, "Make next todo for this project")
+            print(ls, "Make next todo for this project")
         else:
             for task in tododict[project]:
-                s = re.sub(fr'\+{project}', "", task) #todo: more descriptive name for s
+                printstring = re.sub(fr'\+{project}', "", task)
                 match = datepattern.search(task)
                 if not match == None:
                     tdate = match.group()[2:]
                     tdate = datetime.datetime.strptime(tdate, "%Y-%m-%d")
                     if tdate <= now:
-                        s = datepattern.sub(' ', task)
-                        s = " ".join(s.split()) # removes duplicate whitespaces *and* \n.
-                        print(ll, s)
+                        printstring = datepattern.sub(' ', task)
+                        printstring = " ".join(printstring.split()) # removes duplicate whitespaces *and* \n.
+                        if task == tododict[project][-1]:
+                            print(ls, printstring)
+                        else:
+                            print(ll, printstring)
 
                 else:
-                    print(ll, s, end='')
+                    if task == tododict[project][-1]:
+                        print(ls, printstring, end='')
+                    else:
+                        print(ll, printstring, end='')
 
 
 def main(todo_file, done_file, projectfilelist):
