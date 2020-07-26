@@ -35,13 +35,13 @@ def printTodo(tododict):
     for project in tododict:
         i = i + 1
         if i == tododictSize:
-            print(s, project)
+            print(s, project.capitalize())
             firstblock = e
         else:
-            print(t, project)
+            print(t, project.capitalize())
             firstblock = l
         if tododict[project] == []:
-            print(l, s, "Make next todo for this project")
+            print(l, s, "Make next todo for this project", sep='')
         else:
             for task in tododict[project]:
                 printstring = re.sub(fr'\+{project}', "", task)
@@ -53,15 +53,15 @@ def printTodo(tododict):
                         printstring = datepattern.sub(' ', task)
                         printstring = " ".join(printstring.split())  # removes duplicate whitespaces *and* \n.
                         if task == tododict[project][-1]:
-                            print(firstblock, s, printstring, sep='')
+                            print(firstblock, s, printstring.capitalize(), sep='')
                         else:
-                            print(firstblock, t, printstring, sep='')
+                            print(firstblock, t, printstring.capitalize(), sep='')
 
                 else:
                     if task == tododict[project][-1]:
-                        print(firstblock, s, printstring, sep='', end='')
+                        print(firstblock, s, printstring.capitalize(), sep='', end='')
                     else:
-                        print(firstblock, t, printstring, sep='', end='')
+                        print(firstblock, t, printstring.capitalize(), sep='', end='')
 
 
 def main(todo_file, projectfolderlist):
