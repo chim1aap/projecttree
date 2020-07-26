@@ -11,15 +11,18 @@ l = " │  "
 s = " └──"
 e = "    "
 
-PROJECTLISTPATH = os.getenv("TODOTXT_PROJECTTREE_FOLDER")
 
-if PROJECTLISTPATH is None:
-    PROJECTLISTPATH = pathlib.Path.home()
+def getfolderlist():
+    PROJECTLISTPATH = os.getenv("TODOTXT_PROJECTTREE_FOLDER")
 
-p = pathlib.Path(PROJECTLISTPATH)
-folderlist = {"No Project": []}
-for i in p.glob('*/'):
-    folderlist[i.name.lower()] = []
+    if PROJECTLISTPATH is None:
+        PROJECTLISTPATH = pathlib.Path.home()
+
+    p = pathlib.Path(PROJECTLISTPATH)
+    folderlist = {"No Project": []}
+    for i in p.glob('*/'):
+        folderlist[i.name.lower()] = []
+    return folderlist
 
 
 def printTodo(tododict):
@@ -61,14 +64,14 @@ def printTodo(tododict):
                         print(firstblock, t, printstring, sep='', end='')
 
 
-def main(todo_file, done_file, projectfilelist):
+def main(todo_file, projectfolderlist):
     with open(todo_file, 'r') as f:
         content = f.readlines()
-        projects = folderlist
+        projects = projectfolderlist
         for i, task in enumerate(content):
             reg = r'\+[\S]+'
             projectregex = re.search(reg, task)
-            if not projectregex is None:
+            if projectregex is not None:
                 projectregexstr = projectregex.group()[1:]  # remove the +
                 if projectregexstr in projects:
                     projects[projectregexstr].append(task)
@@ -84,13 +87,5 @@ if __name__ == '__main__':
     if len(sys.argv) < 3:
         print("Usage: projecttree.py [TODO_FILE] [DONE_FILE] <projectfolder>")
         sys.exit(1)
-
-    if os.path.isfile(sys.argv[1]) and os.path.isfile(sys.argv[2]):
-        if len(sys.argv) == 4:
-            main(sys.argv[1], sys.argv[2], int(sys.argv[3]))
-        else:
-            main(sys.argv[1], sys.argv[2], p)
-    else:
-        print("Error: %s or %s doesn't exist" % (sys.argv[1], sys.argv[2]))
-        sys.exit(1)
-    # print(os.getenv("TODOTXT_FINAL_FILTER"))
+    ff = getfolderlist()
+    main(sys.argv[1], ff)
