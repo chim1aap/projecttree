@@ -6,10 +6,13 @@ import re
 import datetime
 
 # prefixes:
-l   = " ├──"
-ll  = " │    ├──"
-ls  = " |    └──"
-s   = " └── "
+t   = " ├──"
+l   = " │  "
+s   = " └──"
+e   = "    "
+ll  = l + t
+ls  = l + s
+
 
 
 
@@ -27,11 +30,20 @@ for i in p.glob('*/'):
 def printTodo(tododict):
     now = datetime.datetime.now()
     datepattern = re.compile(r"t:(\d{4})-(\d{2})-(\d{2})")
+    tododictSize = tododict.__len__()
+    i = 0
+
     print("Todos: ")
     for project in tododict:
-        print(l, project)
+        i = i + 1
+        if i == tododictSize :
+            print(s, project)
+            firstblock = e
+        else:
+            print(t, project)
+            firstblock = l
         if tododict[project] == [] :
-            print(ls, "Make next todo for this project")
+            print(l,s, "Make next todo for this project")
         else:
             for task in tododict[project]:
                 printstring = re.sub(fr'\+{project}', "", task)
@@ -43,15 +55,15 @@ def printTodo(tododict):
                         printstring = datepattern.sub(' ', task)
                         printstring = " ".join(printstring.split()) # removes duplicate whitespaces *and* \n.
                         if task == tododict[project][-1]:
-                            print(ls, printstring)
+                            print(firstblock, s, printstring, sep = '')
                         else:
-                            print(ll, printstring)
+                            print(firstblock, l, printstring, sep = '')
 
                 else:
                     if task == tododict[project][-1]:
-                        print(ls, printstring, end='')
+                        print(firstblock, s, printstring, sep='', end='')
                     else:
-                        print(ll, printstring, end='')
+                        print(firstblock, l, printstring, sep='', end='')
 
 
 def main(todo_file, done_file, projectfilelist):
