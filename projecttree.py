@@ -6,26 +6,21 @@ import re
 import datetime
 
 # prefixes:
-t   = " ├──"
-l   = " │  "
-s   = " └──"
-e   = "    "
-ll  = l + t
-ls  = l + s
-
-
-
+t = " ├──"
+l = " │  "
+s = " └──"
+e = "    "
 
 PROJECTLISTPATH = os.getenv("TODOTXT_PROJECTTREE_FOLDER")
 
 if PROJECTLISTPATH is None:
     PROJECTLISTPATH = pathlib.Path.home()
 
-
 p = pathlib.Path(PROJECTLISTPATH)
-folderlist = {"No Project" : [] }
+folderlist = {"No Project": []}
 for i in p.glob('*/'):
     folderlist[i.name.lower()] = []
+
 
 def printTodo(tododict):
     now = datetime.datetime.now()
@@ -36,55 +31,52 @@ def printTodo(tododict):
     print("Todos: ")
     for project in tododict:
         i = i + 1
-        if i == tododictSize :
+        if i == tododictSize:
             print(s, project)
             firstblock = e
         else:
             print(t, project)
             firstblock = l
-        if tododict[project] == [] :
-            print(l,s, "Make next todo for this project")
+        if tododict[project] == []:
+            print(l, s, "Make next todo for this project")
         else:
             for task in tododict[project]:
                 printstring = re.sub(fr'\+{project}', "", task)
                 match = datepattern.search(task)
-                if not match == None:
+                if match is not None:
                     tdate = match.group()[2:]
                     tdate = datetime.datetime.strptime(tdate, "%Y-%m-%d")
                     if tdate <= now:
                         printstring = datepattern.sub(' ', task)
-                        printstring = " ".join(printstring.split()) # removes duplicate whitespaces *and* \n.
+                        printstring = " ".join(printstring.split())  # removes duplicate whitespaces *and* \n.
                         if task == tododict[project][-1]:
-                            print(firstblock, s, printstring, sep = '')
+                            print(firstblock, s, printstring, sep='')
                         else:
-                            print(firstblock, l, printstring, sep = '')
+                            print(firstblock, t, printstring, sep='')
 
                 else:
                     if task == tododict[project][-1]:
                         print(firstblock, s, printstring, sep='', end='')
                     else:
-                        print(firstblock, l, printstring, sep='', end='')
+                        print(firstblock, t, printstring, sep='', end='')
 
 
 def main(todo_file, done_file, projectfilelist):
-
-
     with open(todo_file, 'r') as f:
         content = f.readlines()
         projects = folderlist
         for i, task in enumerate(content):
             reg = r'\+[\S]+'
             projectregex = re.search(reg, task)
-            if not projectregex == None :
-                projectregexstr = projectregex.group()[1:] # remove the +
-                if projectregexstr in projects :
+            if not projectregex is None:
+                projectregexstr = projectregex.group()[1:]  # remove the +
+                if projectregexstr in projects:
                     projects[projectregexstr].append(task)
                 else:
                     projects[projectregexstr] = [task]
-            else :
+            else:
                 projects["No Project"].append(task)
     printTodo(projects)
-
 
 
 # stuff to start the thing. -
