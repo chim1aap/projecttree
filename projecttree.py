@@ -41,10 +41,10 @@ def printTodo(tododict):
             print(t, project.capitalize())
             firstblock = l
         if tododict[project] == []:
-            print(l, s, "Make next todo for this project", sep='')
+            print(l, s, " Make next todo for this project", sep='')
         else:
             for task in tododict[project]:
-                printstring = re.sub(fr'\+{project}', "", task)
+                printstring = re.sub(fr'\+{project}', "", task, flags=re.IGNORECASE)
                 match = datepattern.search(task)
                 if match is not None:
                     tdate = match.group()[2:]
@@ -53,15 +53,15 @@ def printTodo(tododict):
                         printstring = datepattern.sub(' ', task)
                         printstring = " ".join(printstring.split())  # removes duplicate whitespaces *and* \n.
                         if task == tododict[project][-1]:
-                            print(firstblock, s, printstring.capitalize(), sep='')
+                            print(firstblock, s, " ", printstring.capitalize(), sep='')
                         else:
-                            print(firstblock, t, printstring.capitalize(), sep='')
+                            print(firstblock, t, " ", printstring.capitalize(), sep='')
 
                 else:
                     if task == tododict[project][-1]:
-                        print(firstblock, s, printstring.capitalize(), sep='', end='')
+                        print(firstblock, s, " ", printstring.capitalize(), sep='', end='')
                     else:
-                        print(firstblock, t, printstring.capitalize(), sep='', end='')
+                        print(firstblock, t, " ", printstring.capitalize(), sep='', end='')
 
 
 def main(todo_file, projectfolderlist):
@@ -72,7 +72,7 @@ def main(todo_file, projectfolderlist):
             reg = r'\+[\S]+'
             projectregex = re.search(reg, task)
             if projectregex is not None:
-                projectregexstr = projectregex.group()[1:]  # remove the +
+                projectregexstr = projectregex.group()[1:].lower()  # remove the +
                 if projectregexstr in projects:
                     projects[projectregexstr].append(task)
                 else:
