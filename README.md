@@ -1,3 +1,6 @@
+This is made to incorperate the Getting Things Done mentality. 
+ 
+
 # Addon for [todo.txt](http://todotxt.org/)
 This does three things:
 
