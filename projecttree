@@ -1,0 +1,15 @@
+#!/bin/bash
+
+action=$1
+shift
+
+[ "$action" = "usage" ] && {
+  echo "  TODO make beatiful help :"
+  echo "    projecttree, like projectview but printed like a tree. "
+  echo ""
+  exit
+}
+
+[ "$action" = "projecttree" ] && {
+     python $(dirname $0)/projecttree.py "$TODO_FILE" "$DONE_FILE"
+}
