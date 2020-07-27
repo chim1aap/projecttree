@@ -65,20 +65,22 @@ def printTodo(tododict):
 
 
 def main(todo_file, projectfolderlist):
+
     with open(todo_file, 'r') as f:
         content = f.readlines()
         projects = projectfolderlist
         for i, task in enumerate(content):
+            taskstring = str(i+1) +" "+ task
             reg = r'\+[\S]+'
             projectregex = re.search(reg, task)
             if projectregex is not None:
                 projectregexstr = projectregex.group()[1:].lower()  # remove the +
                 if projectregexstr in projects:
-                    projects[projectregexstr].append(task)
+                    projects[projectregexstr].append(taskstring)
                 else:
-                    projects[projectregexstr] = [task]
+                    projects[projectregexstr] = [taskstring]
             else:
-                projects["No Project"].append(task)
+                projects["No Project"].append(taskstring)
     printTodo(projects)
 
 
