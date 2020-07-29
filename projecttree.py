@@ -36,6 +36,7 @@ def printTodo(tododict):
     print("Todos: ")
     for project in tododict:
         i = i + 1
+
         if i == tododictSize:
             print(s, project.capitalize())
             firstblock = e
@@ -46,6 +47,8 @@ def printTodo(tododict):
             print(l, s, " Make next todo for this project", sep='')
         else:
             for task in tododict[project]:
+                if task == "": # then it was removed by the filter.
+                    continue
                 printstring = re.sub(fr'\+{project}', "", task, flags=re.IGNORECASE)
                 printstring = datepattern.sub(' ', printstring)
                 printstring = " ".join(printstring.split())  # removes duplicate whitespaces *and* \n.
@@ -61,17 +64,17 @@ def main(todo_file, projectfolderlist):
         content = f.readlines()
         projects = projectfolderlist
         for i, task in enumerate(content):
-
+            taskstring = str(i+1) +" "+ task
+            projectregex = projectpattern.search(task)
             match = datepattern.search(task)
+
+
             if match is not None: # Future filter stuff
                 tdate = match.group()[2:]
                 tdate = datetime.datetime.strptime(tdate, "%Y-%m-%d")
                 if tdate > now:
-                    continue
+                    taskstring = ""
 
-
-            taskstring = str(i+1) +" "+ task
-            projectregex = projectpattern.search(task)
             if projectregex is not None:
                 projectregexstr = projectregex.group()[1:].lower()  # remove the +
                 if projectregexstr in projects:
