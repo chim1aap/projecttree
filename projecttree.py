@@ -10,7 +10,11 @@ t = " ├──"
 l = " │  "
 s = " └──"
 e = "    "
+#regexes
+datepattern = re.compile(r"t:(\d{4})-(\d{2})-(\d{2})")
+projectpattern = re.compile(r'\+[\S]+')
 
+now = datetime.datetime.now()
 
 def getfolderlist():
     PROJECTLISTPATH = os.getenv("TODOTXT_PROJECTTREE_FOLDER")
@@ -26,8 +30,6 @@ def getfolderlist():
 
 
 def printTodo(tododict):
-    now = datetime.datetime.now()
-    datepattern = re.compile(r"t:(\d{4})-(\d{2})-(\d{2})")
     tododictSize = tododict.__len__()
     i = 0
 
@@ -45,23 +47,12 @@ def printTodo(tododict):
         else:
             for task in tododict[project]:
                 printstring = re.sub(fr'\+{project}', "", task, flags=re.IGNORECASE)
-                match = datepattern.search(task)
-                if match is not None:
-                    tdate = match.group()[2:]
-                    tdate = datetime.datetime.strptime(tdate, "%Y-%m-%d")
-                    if tdate <= now:
-                        printstring = datepattern.sub(' ', task)
-                        printstring = " ".join(printstring.split())  # removes duplicate whitespaces *and* \n.
-                        if task == tododict[project][-1]:
-                            print(firstblock, s, " ", printstring.capitalize(), sep='')
-                        else:
-                            print(firstblock, t, " ", printstring.capitalize(), sep='')
-
+                printstring = datepattern.sub(' ', printstring)
+                printstring = " ".join(printstring.split())  # removes duplicate whitespaces *and* \n.
+                if task == tododict[project][-1]:
+                    print(firstblock, s, " ", printstring.capitalize(), sep='')
                 else:
-                    if task == tododict[project][-1]:
-                        print(firstblock, s, " ", printstring.capitalize(), sep='', end='')
-                    else:
-                        print(firstblock, t, " ", printstring.capitalize(), sep='', end='')
+                    print(firstblock, t, " ", printstring.capitalize(), sep='')
 
 
 def main(todo_file, projectfolderlist):
@@ -70,9 +61,17 @@ def main(todo_file, projectfolderlist):
         content = f.readlines()
         projects = projectfolderlist
         for i, task in enumerate(content):
+
+            match = datepattern.search(task)
+            if match is not None: # Future filter stuff
+                tdate = match.group()[2:]
+                tdate = datetime.datetime.strptime(tdate, "%Y-%m-%d")
+                if tdate > now:
+                    continue
+
+
             taskstring = str(i+1) +" "+ task
-            reg = r'\+[\S]+'
-            projectregex = re.search(reg, task)
+            projectregex = projectpattern.search(task)
             if projectregex is not None:
                 projectregexstr = projectregex.group()[1:].lower()  # remove the +
                 if projectregexstr in projects:
