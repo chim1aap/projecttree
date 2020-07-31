@@ -36,8 +36,11 @@ def printTodo(tododict):
     print("Todos: ")
     for project in tododict:
         i = i + 1
-
-        if i == tododictSize:
+        #print(set(tododict[project]))
+        if set(tododict[project]) == {''} :
+            #print(project)
+            continue
+        elif i == tododictSize:
             print(s, project.capitalize())
             firstblock = e
         else:
@@ -83,6 +86,7 @@ def main(todo_file, projectfolderlist):
                     projects[projectregexstr] = [taskstring]
             else:
                 projects["No Project"].append(taskstring)
+    #print(projects)
     printTodo(projects)
 
 
