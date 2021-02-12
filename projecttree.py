@@ -28,7 +28,7 @@ def getfolderlist():
         folderlist[i.name.lower()] = []
     return folderlist
 
-
+print(getfolderlist())
 def printTodo(tododict):
     tododictSize = tododict.__len__()
     i = 0
@@ -36,9 +36,11 @@ def printTodo(tododict):
     print("Todos: ")
     for project in tododict:
         i = i + 1
-        #print(set(tododict[project]))
-        if set(tododict[project]) == {''} :
-            #print(project)
+
+        #all todo's have a project.
+        if set(tododict[project]) == set() or set(tododict[project]) == {''} :
+            print(t, project)
+            print(l, s,"Make Next Todo For This Project")
             continue
         elif i == tododictSize:
             print(s, project.capitalize())
@@ -46,6 +48,7 @@ def printTodo(tododict):
         else:
             print(t, project.capitalize())
             firstblock = l
+            
         if tododict[project] == []:
             print(l, s, " Make next todo for this project", sep='')
         else:
@@ -76,7 +79,8 @@ def main(todo_file, projectfolderlist):
                 tdate = match.group()[2:]
                 tdate = datetime.datetime.strptime(tdate, "%Y-%m-%d")
                 if tdate > now:
-                    taskstring = ""
+                    continue
+                    #taskstring = ""
 
             if projectregex is not None:
                 projectregexstr = projectregex.group()[1:].lower()  # remove the +
@@ -86,7 +90,7 @@ def main(todo_file, projectfolderlist):
                     projects[projectregexstr] = [taskstring]
             else:
                 projects["No Project"].append(taskstring)
-    #print(projects)
+    print(projects)
     printTodo(projects)
 
 
